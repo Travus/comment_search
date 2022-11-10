@@ -1,0 +1,33 @@
+name: Lint
+
+on:
+  push:
+    branches: [ master ]
+    paths: [ '**.py' ]
+  pull_request:
+    branches: [ master ]
+    paths: [ '**.py' ]
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python 3.10
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install black flake8 pylint mypy
+          pip install -r requirements.txt
+      - name: Check Black style
+        run: black ./*.py modules/*.py --check --line-length 120
+      - name: Lint with flake8
+        run: flake8 ./*.py modules/*.py --count --statistics --max-line-length 120
+      - name: Lint with pylint
+        run: pylint ./*.py modules/*.py --rcfile pylintrc
+      - name: Lint with mypy
+        run: mypy ./*.py modules/*.py --install-types --non-interactive --ignore-missing-imports

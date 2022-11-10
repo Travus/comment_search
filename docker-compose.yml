@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  bot:
+    build: "."
+    depends_on:
+      - postgres
+    volumes:
+      - ./modules:/usr/src/app/modules
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: discord_bot
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:
+    external: false
